@@ -44,6 +44,12 @@ connectionsRef.on("value", function(snapshot) {
 console.log(snapshot.numChildren())
 });
 
+$("#enterNameBtn").on('click', function(){
+  if (player1 !== '' && player2 !== ''){
+    $('#modal-content').html("<h4>User names have been set</h4>")
+  }
+})
+
 $("#save-user").on('click', function(){
   value = $('input').val().trim();
 
@@ -52,6 +58,7 @@ $("#save-user").on('click', function(){
     console.log(player1);
   }else{
     player2 = value;
+    console.log("pl2 " + player2)
   }
   $('#myModal').modal('hide')
 });
