@@ -28,15 +28,18 @@ let players = database.ref('/players')
 
 
 //Writes player data into firebase
-function writePlayerData(player) {
-  firebase.database().ref('users/' + player).set({
+function writePlayerData(userName,player) {
+  firebase.database().ref('users/'+ player).set({
+    name: '' || userName,
     wins: 0,
     message: '',
-    choice: 'rock'
+    choice: ''
   })
 }
 
-var connectedRef = database.ref(".info/connected");
+let playerdb = database.ref("users")
+
+let connectedRef = database.ref(".info/connected");
 
 // When the client's connection state changes...
 connectedRef.on("value", function(snap) {
@@ -54,8 +57,34 @@ connectedRef.on("value", function(snap) {
 
 // When first loaded or when the connections list changes...
 connectionsRef.on("value", function(snapshot) {
-console.log(snapshot.numChildren())
+
+  // if(snapshot.numChildren() === 1){
+  //   writePlayerData('player1',undefined)
+  
+  // }else{
+  //   writePlayerData('player2',undefined)
+  // }
 });
+
+//Testing only
+function test() {
+  if( player1 === ""){
+    return firebase.database().ref('users').once('value').then(function(snapshot) {
+       player1 = snapshot.val().player1.name
+      console.log(player1)
+    }) 
+  }else {
+    return firebase.database().ref('users').once('value').then(function(snapshot) {
+       player2 = snapshot.val().player1.name
+      console.log(player1)
+    }) 
+  }
+
+}
+
+
+
+
 //Text will change if player1 and player2 are already set
 $("#enterNameBtn").on('click', function(){
   if (player1 !== '' && player2 !== ''){
@@ -64,14 +93,13 @@ $("#enterNameBtn").on('click', function(){
 })
 // set the values for player1 and player2
 $("#save-user").on('click', function(){
-  value = $('input').val().trim();
-
-  if(player1 === ''){
-    player1 = value;
-    console.log(player1);
+  if(player1 !== '') {
+    value = $('input').val().trim();
+    writePlayerData(value,'player2')  
+    $('#exampleModalLabel').text('Player 2 Username')
   }else{
-    player2 = value;
-    console.log("pl2 " + player2)
+  value = $('input').val().trim();
+  writePlayerData(value,'player1')
+  test()
   }
-  $('#myModal').modal('hide')
 });
