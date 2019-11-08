@@ -16,13 +16,26 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-var database = firebase.database();
+let database = firebase.database();
 
-  var connectionsRef = database.ref("/connections");
+let connectionsRef = database.ref("/connections");
+
+let players = database.ref('/players')
 
 // '.info/connected' is a special location provided by Firebase that is updated every time
 // the client's connection state changes.
 // '.info/connected' is a boolean value, true if the client is connected and false if they are not.
+
+
+//Writes player data into firebase
+function writePlayerData(player) {
+  firebase.database().ref('users/' + player).set({
+    wins: 0,
+    message: '',
+    choice: 'rock'
+  })
+}
+
 var connectedRef = database.ref(".info/connected");
 
 // When the client's connection state changes...
@@ -43,13 +56,13 @@ connectedRef.on("value", function(snap) {
 connectionsRef.on("value", function(snapshot) {
 console.log(snapshot.numChildren())
 });
-
+//Text will change if player1 and player2 are already set
 $("#enterNameBtn").on('click', function(){
   if (player1 !== '' && player2 !== ''){
     $('#modal-content').html("<h4>User names have been set</h4>")
   }
 })
-
+// set the values for player1 and player2
 $("#save-user").on('click', function(){
   value = $('input').val().trim();
 
