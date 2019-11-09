@@ -14,9 +14,9 @@ firebase.initializeApp(firebaseConfig);
 
 //Global Variables
 let inputName = '';
-let player1;
-let player2;
+let player;
 let player1Present;
+let player2Present;
 
 //Different paths set to firebase.
 let database = firebase.database();
@@ -36,9 +36,10 @@ $("#save-user").on("click", function(){
 playerRef.on('value', function (snap){
   if(snap.child('1').exists()){
     player1Present = true;
+  }if(snap.child('2').exists()){
+    player2Present = true
   }
 })
-
 
 function initGame(){
   if(player1Present){
@@ -47,10 +48,13 @@ function initGame(){
     player = 1
   }
   let playerDet = database.ref('/player/'+ player);
-  playerDet.set({
-  wins:0,
-  losses: '',
-  userName:inputName
-  })
+    playerDet.set({
+    wins:0,
+    losses: '',
+    userName:inputName
+    })
 
+    playerDet.onDisconnect().remove();
 }
+
+
