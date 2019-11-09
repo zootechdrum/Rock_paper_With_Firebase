@@ -12,11 +12,25 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+//Global Variables
 let inputName = '';
+let player1;
+let player2;
+let player1Present;
 
+//Different paths set to firebase.
 let database = firebase.database();
-
 let parentData = database.ref();
+let playerRef = database.ref('/player');
+
+//fires everytime a child is added to the player path in firebase
+playerRef.on('value', function (snap){
+  if(snap.child('1').exists()){
+  player1Present = true;
+  }
+})
+
+
 
 $("#save-user").on("click", function(){
   inputName = $('#enteredUser').val().trim()
@@ -24,5 +38,8 @@ $("#save-user").on("click", function(){
 });
 
 function initGame(){
-  
+
+ if(player1Present){}
+  //create two paths for 2 different players
+
 }
