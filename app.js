@@ -23,23 +23,34 @@ let database = firebase.database();
 let parentData = database.ref();
 let playerRef = database.ref('/player');
 
-//fires everytime a child is added to the player path in firebase
-playerRef.on('value', function (snap){
-  if(snap.child('1').exists()){
-  player1Present = true;
-  }
-})
 
 
 
 $("#save-user").on("click", function(){
   inputName = $('#enteredUser').val().trim()
   initGame()
+  $('#myModal').modal('hide')
 });
 
-function initGame(){
+//fires everytime a child is added to the player path in firebase
+playerRef.on('value', function (snap){
+  if(snap.child('1').exists()){
+    player1Present = true;
+  }
+})
 
- if(player1Present){}
-  //create two paths for 2 different players
+
+function initGame(){
+  if(player1Present){
+    player = 2
+  }else{
+    player = 1
+  }
+  let playerDet = database.ref('/player/'+ player);
+  playerDet.set({
+  wins:0,
+  losses: '',
+  userName:inputName
+  })
 
 }
