@@ -13,8 +13,13 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 //Global Variables
+let player1Wins;
+let player1Losses;
+let player2LWins
+let player2Losses
+
 let inputName = '';
-let player;
+let player = 0;
 let player1Present;
 let player2Present;
 
@@ -22,39 +27,51 @@ let player2Present;
 let database = firebase.database();
 let parentData = database.ref();
 let playerRef = database.ref('/player');
+let currentTurn = database.ref('/turn')
 
 
 
 
-$("#save-user").on("click", function(){
+$("#save-user").on("click", function () {
   inputName = $('#enteredUser').val().trim()
   initGame()
   $('#myModal').modal('hide')
 });
 
 //fires everytime a child is added to the player path in firebase
-playerRef.on('value', function (snap){
-  if(snap.child('1').exists()){
-    player1Present = true;
-  }if(snap.child('2').exists()){
-    player2Present = true
+playerRef.on('value', function (snap) {
+
+  player1Present = snap.child('1').exists()
+  player2Present = snap.child('2').exists()
+
+  if (player1Present) {
+    $('#player1').text(snap.val()[1].userName)
+  }
+  if(player2Present) {
+    $('#player2').text(snap.val()[2].userName)
   }
 })
 
-function initGame(){
-  if(player1Present){
-    player = 2
-  }else{
-    player = 1
-  }
-  let playerDet = database.ref('/player/'+ player);
-    playerDet.set({
-    wins:0,
-    losses: '',
-    userName:inputName
-    })
 
-    playerDet.onDisconnect().remove();
+function initGame() {
+  if (player < 2) {
+    if (player1Present) {
+      player = 2
+    } else {
+      player = 1
+    }
+  };
+
+  let playerDet = database.ref('/player/' + player);
+  playerDet.set({
+    wins: 0,
+    losses: 0,
+    userName: inputName
+  })
+
+  //Write to the DOM
+
+  playerDet.onDisconnect().remove();
 }
 
 
