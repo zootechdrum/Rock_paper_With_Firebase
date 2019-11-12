@@ -27,19 +27,22 @@ let player2Present;
 let database = firebase.database();
 let parentData = database.ref();
 let playerRef = database.ref('/player');
-let currentTurn = database.ref('/turn')
+let currentTurn = database.ref('/turn');
+let chatFeat = database.ref('/chat');
 
 
 
 
-$("#save-user").on("click", function () {
+$("#save-user").on("click", function() {
   inputName = $('#enteredUser').val().trim()
   initGame()
   $('#myModal').modal('hide')
+  $("#enteredUser").hide();
+  $("#playerName").html("<h2>Already Entered Name</h2>");
 });
 
 //fires everytime a child is added to the player path in firebase
-playerRef.on('value', function (snap) {
+playerRef.on('value', function(snap) {
 
   player1Present = snap.child('1').exists()
   player2Present = snap.child('2').exists()
@@ -47,16 +50,27 @@ playerRef.on('value', function (snap) {
   if (player1Present) {
     $('#player1').text(snap.val()[1].userName)
   }
-  if(player2Present) {
+  if (player2Present) {
     $('#player2').text(snap.val()[2].userName)
   }
-  if(!player1Present){
+  if (!player1Present) {
     $('#player1').html("<h1>Player 1 Does not Exist</h1>")
   }
-  if(!player2Present){
+  if (!player2Present) {
     $('#player2').html("<h1>Player 2 Does not Exist</h1>")
   }
 })
+
+  //Chat functionality 
+  $("#submitMessage").on("click", function (e) {
+    e.preventDefault()
+    let saveMessage = $(".message_input").val().trim()
+    console.log(saveMessage)
+    let message = database.ref('/chat/' + player);
+    message.set({
+      message: saveMessage
+    });
+  })
 
 
 function initGame() {
