@@ -50,6 +50,12 @@ playerRef.on('value', function (snap) {
   if(player2Present) {
     $('#player2').text(snap.val()[2].userName)
   }
+  if(!player1Present){
+    $('#player1').html("<h1>Player 1 Does not Exist</h1>")
+  }
+  if(!player2Present){
+    $('#player2').html("<h1>Player 2 Does not Exist</h1>")
+  }
 })
 
 
