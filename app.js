@@ -30,10 +30,20 @@ let playerRef = database.ref('/player');
 let currentTurn = database.ref('/turn');
 let chatFeat = database.ref('/chat');
 
+let message;
 
 
 
-$("#save-user").on("click", function() {
+//This function will fire everytime a child is added to the dom
+
+chatFeat.on('child_added', function (snapChild){
+  $(".message").prepend(inputName + " " + snapChild.val().message)
+  message.onDisconnect().remove();
+
+});
+
+
+$("#save-user").on("click", function () {
   inputName = $('#enteredUser').val().trim()
   initGame()
   $('#myModal').modal('hide')
@@ -42,7 +52,7 @@ $("#save-user").on("click", function() {
 });
 
 //fires everytime a child is added to the player path in firebase
-playerRef.on('value', function(snap) {
+playerRef.on('value', function (snap) {
 
   player1Present = snap.child('1').exists()
   player2Present = snap.child('2').exists()
@@ -61,19 +71,22 @@ playerRef.on('value', function(snap) {
   }
 })
 
-  //Chat functionality 
-  $("#submitMessage").on("click", function (e) {
-    e.preventDefault()
-    let saveMessage = $(".message_input").val().trim()
-    console.log(saveMessage)
-    let message = database.ref('/chat/' + player);
-    message.set({
-      message: saveMessage
-    });
-  })
+//Chat functionality 
+$("#submitMessage").on("click", function (e) {
+  e.preventDefault()
+  let saveMessage = $(".message_input").val().trim()
+  console.log(saveMessage)
+  message = database.ref('/chat/' + player);
+  message.set({
+    message: saveMessage
+  });
+
+  message.onDisconnect().remove();
+})
 
 
 function initGame() {
+  //Initiats who player one is and who player 2 is.
   if (player < 2) {
     if (player1Present) {
       player = 2
