@@ -36,9 +36,14 @@ let message;
 
 //This function will fire everytime a child is added to the dom
 
-chatFeat.on('child_added', function (snapChild){
-  $(".message").prepend(inputName + " " + snapChild.val().message)
+chatFeat.on('value', function (snapChild){
+  console.log(snapChild.child('1').val())
+if(player1Present && player2Present){
+
+  $(".message").prepend("<p>"+ snapChild.val().userName + ' : ' + snapChild.val().message + "</p>")
   message.onDisconnect().remove();
+}
+
 
 });
 
@@ -75,10 +80,11 @@ playerRef.on('value', function (snap) {
 $("#submitMessage").on("click", function (e) {
   e.preventDefault()
   let saveMessage = $(".message_input").val().trim()
-  console.log(saveMessage)
+
   message = database.ref('/chat/' + player);
   message.set({
-    message: saveMessage
+    message: saveMessage,
+    userName: inputName
   });
 
   message.onDisconnect().remove();
