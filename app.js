@@ -28,7 +28,7 @@ let database = firebase.database();
 let parentData = database.ref();
 let playerRef = database.ref('/player');
 let currentTurn = database.ref('/turn');
-let chatFeat = database.ref('/chat');
+chatFeat = database.ref('/chat/');
 
 let message;
 
@@ -36,12 +36,20 @@ let message;
 
 //This function will fire everytime a child is added to the dom
 
-chatFeat.on('value', function (snapChild){
-  console.log(snapChild.child('1').val())
-if(player1Present && player2Present){
+//what is wrong if the player is not one the screen will not update on second player screen
 
-  $(".message").prepend("<p>"+ snapChild.val().userName + ' : ' + snapChild.val().message + "</p>")
-  message.onDisconnect().remove();
+chatFeat.on('value', function (snapChild){
+
+if(player1Present && player2Present){
+player = "1" || "2"
+    $(".message").prepend("<p>" + snapChild.child(player).val().userName + ' : ' + snapChild.child(player).val().message + "</p>")
+
+
+   
+  
+  // }else if(player === 2 ){
+  //   $(".message").prepend("<p>" + snapChild.child("2").val().userName + ' : ' + snapChild.child("2").val().message + "</p>")
+  // }
 }
 
 
@@ -87,7 +95,6 @@ $("#submitMessage").on("click", function (e) {
     userName: inputName
   });
 
-  message.onDisconnect().remove();
 })
 
 
@@ -111,6 +118,7 @@ function initGame() {
   //Write to the DOM
 
   playerDet.onDisconnect().remove();
+  chatFeat.onDisconnect().remove();
 }
 
 
